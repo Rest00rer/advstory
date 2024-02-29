@@ -25,6 +25,8 @@ typedef TrayBuilder = Widget Function(int storyIndex);
 /// start and stop.
 typedef AnimationNotifierCallback = void Function(bool shouldAnimate);
 
+typedef BackButtonBuilder = Widget Function();
+
 /// Callback for story events.
 ///
 /// Invokes on:

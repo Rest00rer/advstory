@@ -9,8 +9,7 @@ import 'package:flutter/services.dart';
 /// Creates a content group view.
 class StoryView extends StatefulWidget {
   /// Creates a widget to managing [Story] skips using [PageView].
-  const StoryView({Key? key, this.backBtn}) : super(key: key);
-  final Widget? backBtn;
+  const StoryView({Key? key}) : super(key: key);
 
   @override
   State<StoryView> createState() => _StoryViewState();
@@ -51,17 +50,17 @@ class _StoryViewState extends State<StoryView> {
       key: _key,
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
-      body: Stack(
-        children: [
-          ValueListenableBuilder(
-            valueListenable: _provider!.controller.gesturesDisabled,
-            builder: (context, bool value, child) {
-              return IgnorePointer(
-                ignoring: value,
-                child: child,
-              );
-            },
-            child: GestureDetector(
+      body: ValueListenableBuilder(
+        valueListenable: _provider!.controller.gesturesDisabled,
+        builder: (context, bool value, child) {
+          return IgnorePointer(
+            ignoring: value,
+            child: child,
+          );
+        },
+        child: Stack(
+          children: [
+            GestureDetector(
               onHorizontalDragUpdate: _handleDragUpdate,
               onHorizontalDragEnd: _handleDragEnd,
               onHorizontalDragCancel: _resetParams,
@@ -98,9 +97,9 @@ class _StoryViewState extends State<StoryView> {
                 onPageChanged: _handlePageChange,
               ),
             ),
-          ),
-          if (widget.backBtn != null) widget.backBtn!
-        ],
+            _provider!.backButtonBuilder?.call() ?? const SizedBox(),
+          ],
+        ),
       ),
     );
   }

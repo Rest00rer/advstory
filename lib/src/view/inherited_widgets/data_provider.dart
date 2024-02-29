@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:advstory/src/contants/types.dart';
 import 'package:advstory/src/controller/advstory_controller_impl.dart';
 import 'package:advstory/src/model/style/advstory_style.dart';
 import 'package:advstory/src/util/build_helper.dart';
@@ -17,6 +18,7 @@ class DataProvider extends InheritedWidget {
     required this.buildHelper,
     required this.preloadContent,
     required this.preloadStory,
+    this.backButtonBuilder,
     this.hasTrays = true,
     this.firstContentPreperation,
   }) : super(key: key, child: child);
@@ -39,6 +41,8 @@ class DataProvider extends InheritedWidget {
   /// Helper utility for building stories.
   final BuildHelper buildHelper;
 
+  final BackButtonBuilder? backButtonBuilder;
+
   /// If an animated tray provided, AdvStory provides this variable and awaits
   /// this future to open the story view. First content completes future when
   /// is ready to show.
@@ -47,8 +51,7 @@ class DataProvider extends InheritedWidget {
   /// First content's markReady method calls this method to allow AdvStory to
   /// show the story view.
   void markFirstReady() {
-    if (firstContentPreperation != null &&
-        !firstContentPreperation!.isCompleted) {
+    if (firstContentPreperation != null && !firstContentPreperation!.isCompleted) {
       firstContentPreperation!.complete();
     }
   }

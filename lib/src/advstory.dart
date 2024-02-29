@@ -32,7 +32,7 @@ class AdvStory extends StatefulWidget {
     this.preloadContent = true,
     this.style = const AdvStoryStyle(),
     Key? key,
-    this.backBtn,
+    this.backBtnBuilder,
   })  : storyController = controller,
         hasTrays = true,
         super(key: key);
@@ -48,12 +48,12 @@ class AdvStory extends StatefulWidget {
     required this.storyBuilder,
     this.preloadContent = true,
     this.preloadStory = true,
-    this.backBtn,
     this.style = const AdvStoryStyle(),
     required AdvStoryPlayerController controller,
   })  : hasTrays = false,
         buildStoryOnTrayScroll = false,
         trayBuilder = null,
+        backBtnBuilder = null,
         storyController = controller,
         super(key: key);
 
@@ -137,7 +137,7 @@ class AdvStory extends StatefulWidget {
   /// {@endtemplate}
   final bool preloadContent;
 
-  final Widget? backBtn;
+  final BackButtonBuilder? backBtnBuilder;
 
   @override
   State<AdvStory> createState() => _AdvStoryState();
@@ -223,10 +223,8 @@ class _AdvStoryState extends State<AdvStory> with TickerProviderStateMixin {
           style: widget.style,
           preloadStory: widget.preloadStory,
           preloadContent: widget.preloadContent,
-          child: SizedBox.expand(
-              child: StoryView(
-            backBtn: widget.backBtn,
-          )),
+          backButtonBuilder: widget.backBtnBuilder,
+          child: const SizedBox.expand(child: StoryView()),
         );
       },
     );
