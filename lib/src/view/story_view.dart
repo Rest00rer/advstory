@@ -59,7 +59,7 @@ class _StoryViewState extends State<StoryView> {
           );
         },
         child: Stack(
-          alignment: Alignment.center,
+          alignment: Alignment.topLeft,
           children: [
             GestureDetector(
               onHorizontalDragUpdate: _handleDragUpdate,
