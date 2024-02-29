@@ -59,6 +59,7 @@ class _TrayShowcaseState extends State<TrayShowcase> {
               child: AdvStory(
                 // Disable story build on scroll to increasing animation
                 // duration.
+                backBtnBuilder: () => const Icon(Icons.arrow_back),
                 buildStoryOnTrayScroll: false,
                 style: AdvStoryStyle(
                   trayListStyle: TrayListStyle(

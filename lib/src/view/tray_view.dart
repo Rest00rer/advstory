@@ -23,6 +23,7 @@ class TrayView extends StatefulWidget {
     required this.style,
     required this.buildStoryOnTrayScroll,
     required this.trayBuilder,
+    this.backButtonBuilder,
     Key? key,
   }) : super(key: key);
 
@@ -46,6 +47,8 @@ class TrayView extends StatefulWidget {
 
   /// {@macro advstory.buildStoryOnTrayScroll}
   final bool buildStoryOnTrayScroll;
+
+  final BackButtonBuilder? backButtonBuilder;
 
   @override
   State<TrayView> createState() => _TrayViewState();
@@ -98,8 +101,7 @@ class _TrayViewState extends State<TrayView> with TickerProviderStateMixin {
     if (!_canShowStory) return;
 
     bool isAnimated = tray is TrayPositionProvider;
-    final pos = widget.controller.trayTapInterceptor?.call(index) ??
-        StoryPosition(0, index);
+    final pos = widget.controller.trayTapInterceptor?.call(index) ?? StoryPosition(0, index);
 
     if (isAnimated) {
       _trayAnimationManager!.update(shouldAnimate: true, index: index);
@@ -131,6 +133,7 @@ class _TrayViewState extends State<TrayView> with TickerProviderStateMixin {
           preloadStory: widget.preloadStory,
           preloadContent: widget.preloadContent,
           firstContentPreperation: firstContentPreperation,
+          backButtonBuilder: widget.backButtonBuilder,
           child: const StoryView(),
         ),
       ),
@@ -214,12 +217,8 @@ class _TrayViewState extends State<TrayView> with TickerProviderStateMixin {
           );
         },
         separatorBuilder: (context, index) => SizedBox(
-          width: widget.style.trayListStyle.direction == Axis.vertical
-              ? 0
-              : widget.style.trayListStyle.spacing,
-          height: widget.style.trayListStyle.direction == Axis.horizontal
-              ? 0
-              : widget.style.trayListStyle.spacing,
+          width: widget.style.trayListStyle.direction == Axis.vertical ? 0 : widget.style.trayListStyle.spacing,
+          height: widget.style.trayListStyle.direction == Axis.horizontal ? 0 : widget.style.trayListStyle.spacing,
         ),
       ),
     );

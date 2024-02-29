@@ -208,6 +208,7 @@ class _AdvStoryState extends State<AdvStory> with TickerProviderStateMixin {
         preloadStory: widget.preloadStory,
         style: widget.style,
         trayBuilder: widget.trayBuilder!,
+        backButtonBuilder: widget.backBtnBuilder,
       );
     }
 
