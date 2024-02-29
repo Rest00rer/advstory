@@ -32,6 +32,7 @@ class AdvStory extends StatefulWidget {
     this.preloadContent = true,
     this.style = const AdvStoryStyle(),
     Key? key,
+    this.backBtn,
   })  : storyController = controller,
         hasTrays = true,
         super(key: key);
@@ -47,6 +48,7 @@ class AdvStory extends StatefulWidget {
     required this.storyBuilder,
     this.preloadContent = true,
     this.preloadStory = true,
+    this.backBtn,
     this.style = const AdvStoryStyle(),
     required AdvStoryPlayerController controller,
   })  : hasTrays = false,
@@ -135,6 +137,8 @@ class AdvStory extends StatefulWidget {
   /// {@endtemplate}
   final bool preloadContent;
 
+  final Widget? backBtn;
+
   @override
   State<AdvStory> createState() => _AdvStoryState();
 }
@@ -161,8 +165,7 @@ class _AdvStoryState extends State<AdvStory> with TickerProviderStateMixin {
     );
     _indicatorController = AnimationController(vsync: this);
 
-    _controller = (widget.storyController ?? AdvStoryController())
-        as AdvStoryControllerImpl;
+    _controller = (widget.storyController ?? AdvStoryController()) as AdvStoryControllerImpl;
     _controller
       ..storyCount = widget.storyCount
       ..setAnimationControllers(
@@ -220,7 +223,10 @@ class _AdvStoryState extends State<AdvStory> with TickerProviderStateMixin {
           style: widget.style,
           preloadStory: widget.preloadStory,
           preloadContent: widget.preloadContent,
-          child: const SizedBox.expand(child: StoryView()),
+          child: SizedBox.expand(
+              child: StoryView(
+            backBtn: widget.backBtn,
+          )),
         );
       },
     );

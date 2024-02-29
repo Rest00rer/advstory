@@ -9,7 +9,8 @@ import 'package:flutter/services.dart';
 /// Creates a content group view.
 class StoryView extends StatefulWidget {
   /// Creates a widget to managing [Story] skips using [PageView].
-  const StoryView({Key? key}) : super(key: key);
+  const StoryView({Key? key, this.backBtn}) : super(key: key);
+  final Widget? backBtn;
 
   @override
   State<StoryView> createState() => _StoryViewState();
@@ -50,52 +51,56 @@ class _StoryViewState extends State<StoryView> {
       key: _key,
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.transparent,
-      body: ValueListenableBuilder(
-        valueListenable: _provider!.controller.gesturesDisabled,
-        builder: (context, bool value, child) {
-          return IgnorePointer(
-            ignoring: value,
-            child: child,
-          );
-        },
-        child: GestureDetector(
-          onHorizontalDragUpdate: _handleDragUpdate,
-          onHorizontalDragEnd: _handleDragEnd,
-          onHorizontalDragCancel: _resetParams,
-          child: PageView.builder(
-            allowImplicitScrolling: _provider!.preloadStory,
-            physics: const NeverScrollableScrollPhysics(),
-            pageSnapping: false,
-            controller: _provider!.controller.storyController!,
-            // Added one more page to detect when user swiped past
-            // the last page
-            itemBuilder: (context, index) {
-              // If user swipes past the last page, return an empty view
-              // before closing story view.
-              if (index >= _provider!.controller.storyCount) {
-                return const SizedBox();
-              }
-
-              final ValueNotifier<Widget> content =
-                  ValueNotifier(_provider!.style());
-
-              () async {
-                final story = await _provider!.buildHelper.buildStory(index);
-
-                content.value = ContentView(
-                  storyIndex: index,
-                  story: story,
-                );
-              }();
-
-              return ValueListenableBuilder<Widget>(
-                valueListenable: content,
-                builder: (context, value, child) => value,
+      body: Stack(
+        children: [
+          ValueListenableBuilder(
+            valueListenable: _provider!.controller.gesturesDisabled,
+            builder: (context, bool value, child) {
+              return IgnorePointer(
+                ignoring: value,
+                child: child,
               );
             },
-            onPageChanged: _handlePageChange,
+            child: GestureDetector(
+              onHorizontalDragUpdate: _handleDragUpdate,
+              onHorizontalDragEnd: _handleDragEnd,
+              onHorizontalDragCancel: _resetParams,
+              child: PageView.builder(
+                allowImplicitScrolling: _provider!.preloadStory,
+                physics: const NeverScrollableScrollPhysics(),
+                pageSnapping: false,
+                controller: _provider!.controller.storyController!,
+                // Added one more page to detect when user swiped past
+                // the last page
+                itemBuilder: (context, index) {
+                  // If user swipes past the last page, return an empty view
+                  // before closing story view.
+                  if (index >= _provider!.controller.storyCount) {
+                    return const SizedBox();
+                  }
+
+                  final ValueNotifier<Widget> content = ValueNotifier(_provider!.style());
+
+                  () async {
+                    final story = await _provider!.buildHelper.buildStory(index);
+
+                    content.value = ContentView(
+                      storyIndex: index,
+                      story: story,
+                    );
+                  }();
+
+                  return ValueListenableBuilder<Widget>(
+                    valueListenable: content,
+                    builder: (context, value, child) => value,
+                  );
+                },
+                onPageChanged: _handlePageChange,
+              ),
+            ),
           ),
-        ),
+          if (widget.backBtn != null) widget.backBtn!
+        ],
       ),
     );
   }
@@ -141,8 +146,7 @@ class _StoryViewState extends State<StoryView> {
   void _callInterceptor(double delta) {
     final cont = _provider!.controller;
 
-    if (cont.storyController!.page!.round() == cont.storyCount - 1 &&
-        delta < 0) {
+    if (cont.storyController!.page!.round() == cont.storyCount - 1 && delta < 0) {
       _event = StoryEvent.close;
     } else {
       _event = delta < 0 ? StoryEvent.nextStory : StoryEvent.previousStory;
@@ -160,8 +164,7 @@ class _StoryViewState extends State<StoryView> {
 
       final addition = _delta < 0 ? 1 : -1;
       final contPage = cont.page!.round();
-      final page =
-          _delta.abs() < width * .5 && bound ? contPage + addition : contPage;
+      final page = _delta.abs() < width * .5 && bound ? contPage + addition : contPage;
 
       _isAnimating = true;
       const duration = Duration(milliseconds: 300);
